@@ -32,8 +32,36 @@ const getSingleTask = async (req, res) => {
   }
 };
 
+const deleteTask = async (req, res) => {
+  try {
+    const { id: taskId } = req.params;
+    const task = await Task.findByIdAndDelete(taskId);
+    if (!task) {
+      return res.send({ status: "fail", error: "this task doesn't exist" });
+    }
+    res.status(200).send({ status: "success", data: task });
+  } catch (error) {
+    return res.status(500).send({ status: "fail", error });
+  }
+};
+
+const updateTask = async (req, res) => {
+  try {
+    const { id: taskId } = req.params;
+    const task = await Task.findByIdAndUpdate(taskId, req.body, { new: true });
+    if (!task) {
+      return res.send({ status: "fail", error: "this task doesn't exist" });
+    }
+    res.status(200).send({ status: "success", data: task });
+  } catch (error) {
+    return res.status(500).send({ status: "fail", error });
+  }
+};
+
 module.exports = {
   getAllTasks,
   createTask,
   getSingleTask,
+  deleteTask,
+  updateTask,
 };
