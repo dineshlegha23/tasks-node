@@ -1,62 +1,43 @@
+const asyncWrapper = require("../middlewares/async");
 const Task = require("../models/TasksSchema");
 
-const getAllTasks = async (req, res) => {
-  try {
-    const tasks = await Task.find({});
-    res.status(200).send({ status: 200, data: tasks });
-  } catch (error) {
-    res.status(500).send({ status: "fail", error });
-  }
-};
+const getAllTasks = asyncWrapper(async (req, res) => {
+  const tasks = await Task.find({});
+  res.status(200).send({ status: 200, data: tasks });
+});
 
-const createTask = async (req, res) => {
-  try {
-    const { name } = req.body;
-    const newTask = await Task.create({ name });
-    res.status(201).send({ status: "success", data: newTask });
-  } catch (error) {
-    res.status(500).send({ status: "fail", error });
-  }
-};
+const createTask = asyncWrapper(async (req, res) => {
+  const { name } = req.body;
+  const newTask = await Task.create({ name });
+  res.status(201).send({ status: "success", data: newTask });
+});
 
-const getSingleTask = async (req, res) => {
-  try {
-    const { id: taskId } = req.params;
-    const task = await Task.findById(taskId);
-    if (!task) {
-      return res.send({ status: "fail", error: "this task doesn't exist" });
-    }
-    res.status(200).send({ status: "success", data: task });
-  } catch (error) {
-    return res.status(500).send({ status: "fail", error });
+const getSingleTask = asyncWrapper(async (req, res) => {
+  const { id: taskId } = req.params;
+  const task = await Task.findById(taskId);
+  if (!task) {
+    return res.send({ status: "fail", error: "this task doesn't exist" });
   }
-};
+  res.status(200).send({ status: "success", data: task });
+});
 
-const deleteTask = async (req, res) => {
-  try {
-    const { id: taskId } = req.params;
-    const task = await Task.findByIdAndDelete(taskId);
-    if (!task) {
-      return res.send({ status: "fail", error: "this task doesn't exist" });
-    }
-    res.status(200).send({ status: "success", data: task });
-  } catch (error) {
-    return res.status(500).send({ status: "fail", error });
+const deleteTask = asyncWrapper(async (req, res) => {
+  const { id: taskId } = req.params;
+  const task = await Task.findByIdAndDelete(taskId);
+  if (!task) {
+    return res.send({ status: "fail", error: "this task doesn't exist" });
   }
-};
+  res.status(200).send({ status: "success", data: task });
+});
 
-const updateTask = async (req, res) => {
-  try {
-    const { id: taskId } = req.params;
-    const task = await Task.findByIdAndUpdate(taskId, req.body, { new: true });
-    if (!task) {
-      return res.send({ status: "fail", error: "this task doesn't exist" });
-    }
-    res.status(200).send({ status: "success", data: task });
-  } catch (error) {
-    return res.status(500).send({ status: "fail", error });
+const updateTask = asyncWrapper(async (req, res) => {
+  const { id: taskId } = req.params;
+  const task = await Task.findByIdAndUpdate(taskId, req.body, { new: true });
+  if (!task) {
+    return res.send({ status: "fail", error: "this task doesn't exist" });
   }
-};
+  res.status(200).send({ status: "success", data: task });
+});
 
 module.exports = {
   getAllTasks,
